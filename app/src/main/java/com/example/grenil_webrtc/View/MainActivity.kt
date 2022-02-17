@@ -5,13 +5,16 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.example.grenil_webrtc.Adapter.ViewPagerAdapter
 import com.example.grenil_webrtc.R
 import com.example.grenil_webrtc.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayoutMediator
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
 
 class MainActivity : AppCompatActivity() {
     var fragmentList = listOf(VoiceFragment(), GroupFragment())
@@ -19,27 +22,33 @@ class MainActivity : AppCompatActivity() {
     //퍼미션 응답 처리 코드
     private val multiplePermissionsCode = 100
 
+    //거부된 퍼미션 리스트
+    var rejectedPermissionList = ArrayList<String>()
     //필요한 퍼미션 리스트
-    //원하는 퍼미션을 이곳에 추가
-    //<uses-permission android:name="android.permission.CALL_PHONE" />
-    //<uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
-    //<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    //<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     val requiredPermissions = arrayOf(
         Manifest.permission.CALL_PHONE,
         Manifest.permission.ANSWER_PHONE_CALLS,
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.SYSTEM_ALERT_WINDOW)
 
+    companion object {
+        private const val CAMERA_AUDIO_PERMISSION_REQUEST_CODE = 1
+        private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
+        private const val AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO
+        //private const val LOCATION_PERMISSION = Manifest.permission.ACCESS_COARSE_LOCATION
+    }
+
     //바인딩
     val binding by lazy { ActivityMainBinding.inflate(layoutInflater)}
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         //권한 설정
-        checkPermissions()
+        //checkPermissions()
 
 
         //탭레이아웃
@@ -72,6 +81,43 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }.attach()
 
+        //sliding pannel
+        val slidePanel = binding.mainFrame                      // SlidingUpPanel
+        //slidePanel.addPanelSlideListener(PanelEventListener())
+
+        //다른 영역 터치 불가
+        slidePanel.isTouchEnabled = false
+
+        //처음부터 나왔고 toggle 버튼 클릭하면 사라지기
+        binding.btnToggle.setOnClickListener {
+            slidePanel.panelState =SlidingUpPanelLayout.PanelState.HIDDEN
+            checkPermissions()
+            //val state = slidePanel.panelState
+            // 닫힌 상태일 경우 열기
+//            if (state == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+//                slidePanel.panelState = SlidingUpPanelLayout.PanelState.ANCHORED
+//            }
+//            // 열린 상태일 경우 닫기
+//            else if (state == SlidingUpPanelLayout.PanelState.EXPANDED) {
+//                slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+//            }
+        }
+        //알람
+        binding.permissionAlarm.setOnClickListener {
+            rejectedPermissionList.add(CAMERA_PERMISSION)
+        }
+
+        //카메라
+        binding.permissionCamera.setOnClickListener {
+            rejectedPermissionList.add(CAMERA_PERMISSION)
+        }
+
+        //마이크
+        binding.permissionMike.setOnClickListener {
+            rejectedPermissionList.add(AUDIO_PERMISSION)
+
+        }
+
         //1. fragmentStateAdapter 초기화
         val pagerAdapter = ViewPagerAdapter(this)
             .apply {
@@ -101,7 +147,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissions() {
-        var rejectedPermissionList = ArrayList<String>()
+
 
         //필요한 퍼미션들을 하나씩 끄집어내서 현재 권한을 받았는지 체크
         for(permission in requiredPermissions){
@@ -140,4 +186,23 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+//    inner class PanelEventListener : SlidingUpPanelLayout.PanelSlideListener {
+//        override fun onPanelSlide(panel: View, slideOffset: Float) {
+//            Log.i("offset:",slideOffset.toString())
+//        }
+//
+//        override fun onPanelStateChanged(
+//            panel: View?,
+//            previousState: SlidingUpPanelLayout.PanelState?,
+//            newState: SlidingUpPanelLayout.PanelState?
+//        ) {
+//            if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+//                binding.btnToggle.setText("열기")
+//            } else if (newState == SlidingUpPanelLayout.PanelState.EXPANDED) {
+//                binding.btnToggle.setText("닫기")
+//            }
+//        }
+//
+//
+//    }
 }

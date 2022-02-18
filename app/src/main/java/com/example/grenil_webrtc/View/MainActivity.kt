@@ -11,7 +11,9 @@ import androidx.core.content.ContextCompat
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.example.grenil_webrtc.Adapter.ViewPagerAdapter
+import com.example.grenil_webrtc.GroupChat.GroupFragment
 import com.example.grenil_webrtc.R
+import com.example.grenil_webrtc.VoiceChat.VoiceFragment
 import com.example.grenil_webrtc.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout

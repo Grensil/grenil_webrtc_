@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 }
-
+//apply plugin: 'com.google.gms.google-services'
 android {
     compileSdk 32
 
@@ -47,11 +47,25 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-
-
+    //
+    //implementation 'org.webrtc:google-webrtc:1.0.32006'
+    //implementation files('libs/autobanh.jar')
+    //
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
 
+    //
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
+
+
+
+
+    //
+    implementation platform('com.google.firebase:firebase-bom:29.0.4')
+    implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+
+    //
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1")
 
 
 }

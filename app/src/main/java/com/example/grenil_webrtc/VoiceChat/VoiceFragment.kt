@@ -74,7 +74,7 @@ class VoiceFragment : Fragment() {
             //현재 아이템(peer 정보/ meeting ID) 클릭한것을 RTCActivity로 넘겨주자
             val intent = Intent(requireContext(), RTCActivity::class.java)
             val meeting_id = peerName
-            val isJoin = false
+            val isJoin = false // false면 방장 , true 면 참가자
             intent.putExtra("meetingID",meeting_id)
             intent.putExtra("isJoin",isJoin)
             startActivity(intent)

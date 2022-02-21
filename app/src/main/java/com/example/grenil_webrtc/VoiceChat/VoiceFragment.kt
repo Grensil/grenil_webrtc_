@@ -1,5 +1,6 @@
 package com.example.grenil_webrtc.VoiceChat
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,10 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil.setContentView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.grenil_webrtc.Adapter.PersonAdapter
 import com.example.grenil_webrtc.R
+import com.example.grenil_webrtc.WebRTC.RTCActivity
 import com.example.grenil_webrtc.databinding.FragmentVoiceBinding
+import org.webrtc.SessionDescription
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,8 +34,14 @@ class VoiceFragment : Fragment() {
     lateinit var myadapter : PersonAdapter
     var peers: List<String> = listOf("first peer","second peer","third peer")
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
+
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -60,7 +70,14 @@ class VoiceFragment : Fragment() {
     inner class PersonClickListener : PersonAdapter.onPeerClickListener {
         override fun onPeerClick(peerName: String) {
             //peer 아이템 클릭 이벤트
-            Log.i("peer","Hi, I'm $peerName")
+            //Log.i("peer","Hi, I'm $peerName")
+            //현재 아이템(peer 정보/ meeting ID) 클릭한것을 RTCActivity로 넘겨주자
+            val intent = Intent(requireContext(), RTCActivity::class.java)
+            val meeting_id = peerName
+            val isJoin = false
+            intent.putExtra("meetingID",meeting_id)
+            intent.putExtra("isJoin",isJoin)
+            startActivity(intent)
         }
 
     }

@@ -39,9 +39,6 @@ class VoiceFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-
-
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -64,6 +61,7 @@ class VoiceFragment : Fragment() {
         myadapter.setPeerClickListener(PersonClickListener())
         recyclerView.adapter = myadapter
 
+        //처음부터 firebase에 등록시키자
 
         return binding!!.root
     }
@@ -73,7 +71,7 @@ class VoiceFragment : Fragment() {
             //Log.i("peer","Hi, I'm $peerName")
             //현재 아이템(peer 정보/ meeting ID) 클릭한것을 RTCActivity로 넘겨주자
             val intent = Intent(requireContext(), RTCActivity::class.java)
-            val meeting_id = peerName
+            val meeting_id = peerName //peername 으로 방을 만들자
             val isJoin = false // false면 방장 , true 면 참가자
             intent.putExtra("meetingID",meeting_id)
             intent.putExtra("isJoin",isJoin)

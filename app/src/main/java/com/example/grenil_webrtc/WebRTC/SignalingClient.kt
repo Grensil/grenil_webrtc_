@@ -30,6 +30,7 @@ class SignalingClient(private val meetingID : String,
 
     val db = Firebase.firestore
 
+
     private val gson = Gson()
 
     var SDPtype : String? = null
@@ -48,6 +49,7 @@ class SignalingClient(private val meetingID : String,
         connect()
     }
 
+    //시그널링 서버와 연결(실시간)
     private fun connect() = launch {
         db.enableNetwork().addOnSuccessListener {
             listener.onConnectionEstablished()
@@ -76,7 +78,7 @@ class SignalingClient(private val meetingID : String,
                         Log.w(TAG, "listen:error", e)
                         return@addSnapshotListener
                     }
-
+                    //실시간으로 이 대화방의 상태를 감지하고 firebase 안에 데이터를 넣어줌
                     if (snapshot != null && snapshot.exists()) {
                         val data = snapshot.data
                         if (data?.containsKey("type")!! &&
@@ -100,6 +102,8 @@ class SignalingClient(private val meetingID : String,
                         Log.d(TAG, "Current data: null")
                     }
                 }
+
+            //실시간으로 후보자들의 offer 냐 answer 냐를 따져서 후보자에 넣는다.
             db.collection("calls").document(meetingID)
                     .collection("candidates").addSnapshotListener{ querysnapshot,e->
                         if (e != null) {
@@ -149,14 +153,33 @@ class SignalingClient(private val meetingID : String,
     }
     //실시간으로 candidate 정보가 firebase안에 들어감
     fun sendIceCandidate(candidate: IceCandidate?,isJoin : Boolean) = runBlocking {
-
+        //offercandidate 가 이미 존재하면 offer , 아니면 answer
         val type = when {
             isJoin -> {
-                //count +=1
                 "answerCandidate"
             }
             else -> "offerCandidate"
         }
+        //var type = "answerCandidate" // 기본은 answer(참가자) 로
+        // 성공하면 -> answer 실패하면 -> offer
+//        db.collection("calls").document(meetingID) // 하지만 참가자가 없다면 본인이 방장이 된다.
+//            .collection("candidates").get().result {
+//                    type = "offerCandidate"
+//            }
+
+//        if (db.collection("calls").document(meetingID) // 하지만 참가자가 없다면 본인이 방장이 된다.
+//            .collection("candidates").get().result.isEmpty) {
+//            type = "offerCandidate"
+//        }
+
+//        var type: String? = null
+//        db.collection("calls").document(meetingID).collection("candidates").get().addOnSuccessListener {
+//            type = "answerCandidate"
+//        }.addOnFailureListener {
+//            type = "offerCandidate"
+//        }
+
+
         val candidateConstant = hashMapOf(
                 "serverUrl" to candidate?.serverUrl,
                 "sdpMid" to candidate?.sdpMid,
@@ -166,7 +189,7 @@ class SignalingClient(private val meetingID : String,
 
         )
         db.collection("calls")
-            .document("$meetingID").collection("candidates").document(type+"my_ID")
+            .document("$meetingID").collection("candidates").document(type!!)
             .set(candidateConstant as Map<String, Any>)
             .addOnSuccessListener {
                 Log.e(TAG, "sendIceCandidate: Success" )

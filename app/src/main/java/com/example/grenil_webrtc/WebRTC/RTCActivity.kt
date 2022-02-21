@@ -58,9 +58,14 @@ class RTCActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_call)
 
-        //meetingID 와 isJoin은 우선 하드코딩
-        meetingID = "grensil1"
-        isJoin = true // false면 방장 , true면 참가자
+        if (intent.hasExtra("meetingID"))
+            meetingID = intent.getStringExtra("meetingID")!!
+        if (intent.hasExtra("isJoin")) //false 면 방장, true 면 참가자
+            isJoin = intent.getBooleanExtra("isJoin",false)
+
+        //isJoin은 우선 하드코딩
+        //meetingID = "grensil1"
+        //isJoin = true // false면 방장 , true면 참가자
 
         //권한 정보를 rctclient -> signlaingclient 에 보내는 역할
         checkCameraAndAudioPermission()

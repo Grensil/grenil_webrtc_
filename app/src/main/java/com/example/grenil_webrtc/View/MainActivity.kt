@@ -146,6 +146,9 @@ class MainActivity : AppCompatActivity() {
             }
         }.attach()
 
+
+
+
     }
 
     private fun checkPermissions() {

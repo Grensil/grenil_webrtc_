@@ -178,7 +178,7 @@ class RTCActivity : AppCompatActivity() {
 
 
         signallingClient =  SignalingClient(meetingID,createSignallingClientListener())
-        if (!isJoin)
+        if (!isJoin) // 방장일시
             rtcClient.call(sdpObserver,meetingID)
     }
 

@@ -7,13 +7,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.developerspace.webrtcsample.RTCClient
+import com.developerspace.webrtcsample.SignalingClient
+import com.developerspace.webrtcsample.SignalingClientListener
 import com.example.grenil_webrtc.Adapter.PersonAdapter
 import com.example.grenil_webrtc.R
+import com.example.grenil_webrtc.View.MainActivity
+import com.example.grenil_webrtc.WebRTC.AppSdpObserver
+import com.example.grenil_webrtc.WebRTC.Constants
 import com.example.grenil_webrtc.WebRTC.RTCActivity
 import com.example.grenil_webrtc.databinding.FragmentVoiceBinding
+import kotlinx.android.synthetic.main.activity_call.*
+import org.webrtc.IceCandidate
 import org.webrtc.SessionDescription
 
 // TODO: Rename parameter arguments, choose names that match
@@ -34,7 +43,17 @@ class VoiceFragment : Fragment() {
     lateinit var myadapter : PersonAdapter
     var peers: List<String> = listOf("first peer","second peer","third peer")
 
+    private var meetingID : String = "test-call"
+    //나에 대한 대화 요청이 왔는지 리스너 만들기 위한 변수..
+    private lateinit var rtcClient: RTCClient
+    private lateinit var signallingClient: SignalingClient
 
+    private val sdpObserver = object : AppSdpObserver() {
+        override fun onCreateSuccess(p0: SessionDescription?) {
+            super.onCreateSuccess(p0)
+            //signallingClient.send(p0)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +62,7 @@ class VoiceFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
 
 
     }
@@ -61,10 +81,19 @@ class VoiceFragment : Fragment() {
         myadapter.setPeerClickListener(PersonClickListener())
         recyclerView.adapter = myadapter
 
-        //처음부터 firebase에 등록시키자
+        //나에게 요청이 왔는지에 대한 리스너를 만들고싶다.. But, How?
+
+//        val intent = Intent(requireContext(), RTCActivity::class.java)
+//        val meeting_id = meetingID //peername 으로 방을 만들자
+//        val isJoin = true // false면 방장 , true 면 참가자
+//        intent.putExtra("meetingID",meeting_id)
+//        intent.putExtra("isJoin",isJoin)
+//        startActivity(intent)
 
         return binding!!.root
     }
+
+
     inner class PersonClickListener : PersonAdapter.onPeerClickListener {
         override fun onPeerClick(peerName: String) {
             //peer 아이템 클릭 이벤트

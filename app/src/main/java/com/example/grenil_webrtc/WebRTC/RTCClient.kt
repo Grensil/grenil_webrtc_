@@ -221,8 +221,10 @@ class RTCClient(
 
     fun addIceCandidate(iceCandidate: IceCandidate?) {
         peerConnection?.addIceCandidate(iceCandidate)
+
     }
 
+    //firebase 상태를 endcall로 바꾸고 peerconnection 종료
     fun endCall(meetingID: String) {
         db.collection("calls").document(meetingID).collection("candidates")
                 .get().addOnSuccessListener {

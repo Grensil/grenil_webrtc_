@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".View.VoiceFragment">
@@ -16,6 +16,8 @@
             tools:listitem="@layout/item_person">
 
         </androidx.recyclerview.widget.RecyclerView>
+
+
 
     </FrameLayout>
 

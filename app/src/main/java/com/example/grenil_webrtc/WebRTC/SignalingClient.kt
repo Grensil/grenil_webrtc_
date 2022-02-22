@@ -69,7 +69,7 @@ class SignalingClient(private val meetingID : String,
 //                        Log.e(TAG, "Error adding document", e)
 //                    }
         }
-        try {
+        try {//이 방의 상태를 실시간으로 변경
             db.collection("calls")
                 .document(meetingID)
                 .addSnapshotListener { snapshot, e ->
@@ -103,7 +103,7 @@ class SignalingClient(private val meetingID : String,
                     }
                 }
 
-            //실시간으로 후보자들의 offer 냐 answer 냐를 따져서 후보자에 넣는다.
+
             db.collection("calls").document(meetingID)
                     .collection("candidates").addSnapshotListener{ querysnapshot,e->
                         if (e != null) {
@@ -160,11 +160,12 @@ class SignalingClient(private val meetingID : String,
             }
             else -> "offerCandidate"
         }
-        //var type = "answerCandidate" // 기본은 answer(참가자) 로
-        // 성공하면 -> answer 실패하면 -> offer
-//        db.collection("calls").document(meetingID) // 하지만 참가자가 없다면 본인이 방장이 된다.
-//            .collection("candidates").get().result {
+//        var type: String? = null //
+//        db.collection("calls").document(meetingID)
+//            .collection("candidates").document("answerCandidate").get().addOnSuccessListener {
 //                    type = "offerCandidate"
+//            }.addOnFailureListener {-
+//                type = "answerCandidate"
 //            }
 
 //        if (db.collection("calls").document(meetingID) // 하지만 참가자가 없다면 본인이 방장이 된다.

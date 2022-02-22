@@ -1,22 +1,34 @@
 package com.example.grenil_webrtc.View
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.developerspace.webrtcsample.RTCClient
+import com.developerspace.webrtcsample.SignalingClient
+import com.developerspace.webrtcsample.SignalingClientListener
 import com.example.grenil_webrtc.Adapter.ViewPagerAdapter
 import com.example.grenil_webrtc.GroupChat.GroupFragment
 import com.example.grenil_webrtc.R
 import com.example.grenil_webrtc.VoiceChat.VoiceFragment
+import com.example.grenil_webrtc.WebRTC.AppSdpObserver
+import com.example.grenil_webrtc.WebRTC.Constants
+import com.example.grenil_webrtc.WebRTC.PeerConnectionObserver
 import com.example.grenil_webrtc.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import kotlinx.android.synthetic.main.activity_call.*
+import org.webrtc.*
 
 class MainActivity : AppCompatActivity() {
     var fragmentList = listOf(VoiceFragment(), GroupFragment())
@@ -33,6 +45,15 @@ class MainActivity : AppCompatActivity() {
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.SYSTEM_ALERT_WINDOW)
 
+    private lateinit var rtcClient: RTCClient
+    private lateinit var signallingClient: SignalingClient
+
+    private var isJoin = false // 앱 시작 시 나는 무조건 방장이 된다.
+
+    private var meetingID : String = "test-call"
+
+    val TAG = "MainActivity"
+
     companion object {
         private const val CAMERA_AUDIO_PERMISSION_REQUEST_CODE = 1
         private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
@@ -43,6 +64,13 @@ class MainActivity : AppCompatActivity() {
     //바인딩
     val binding by lazy { ActivityMainBinding.inflate(layoutInflater)}
 
+    private val sdpObserver = object : AppSdpObserver() {
+        override fun onCreateSuccess(p0: SessionDescription?) {
+            super.onCreateSuccess(p0)
+            //signallingClient.send(p0)
+        }
+    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //권한 설정
-        //checkPermissions()
+        checkPermissions()
 
 
         //탭레이아웃
@@ -93,7 +121,7 @@ class MainActivity : AppCompatActivity() {
         //처음부터 나왔고 toggle 버튼 클릭하면 사라지기
         binding.btnToggle.setOnClickListener {
             slidePanel.panelState =SlidingUpPanelLayout.PanelState.HIDDEN
-            checkPermissions()
+            //checkPermissions()
             //val state = slidePanel.panelState
             // 닫힌 상태일 경우 열기
 //            if (state == SlidingUpPanelLayout.PanelState.COLLAPSED) {
@@ -146,7 +174,11 @@ class MainActivity : AppCompatActivity() {
             }
         }.attach()
 
+
+
+
     }
+
 
     private fun checkPermissions() {
 

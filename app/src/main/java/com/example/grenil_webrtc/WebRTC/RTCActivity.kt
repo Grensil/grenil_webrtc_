@@ -67,6 +67,10 @@ class RTCActivity : AppCompatActivity() {
         //meetingID = "grensil1"
         //isJoin = true // false면 방장 , true면 참가자
 
+
+
+
+
         //권한 정보를 rctclient -> signlaingclient 에 보내는 역할
         checkCameraAndAudioPermission()
 
@@ -132,8 +136,8 @@ class RTCActivity : AppCompatActivity() {
             object : PeerConnectionObserver() {
                 override fun onIceCandidate(p0: IceCandidate?) {
                     super.onIceCandidate(p0)
-                    signallingClient.sendIceCandidate(p0, isJoin)
-                    rtcClient.addIceCandidate(p0)
+                    signallingClient.sendIceCandidate(p0, isJoin) // 시그널링에 알려주고
+                    rtcClient.addIceCandidate(p0)// 클라이언트에 추가해주고
                 }
 
                 override fun onAddStream(p0: MediaStream?) {
@@ -172,13 +176,15 @@ class RTCActivity : AppCompatActivity() {
             }
         )
 
+        //내 화면 및 상대 화면 공간 초기화 및 비디오 출력 담당
         rtcClient.initSurfaceView(remote_view)
         rtcClient.initSurfaceView(local_view)
         rtcClient.startLocalVideoCapture(local_view)
 
 
+        //시그널링 리스너 (방장일때도 포함되어야함)
         signallingClient =  SignalingClient(meetingID,createSignallingClientListener())
-        if (!isJoin)
+        if (!isJoin) // 방장일 때
             rtcClient.call(sdpObserver,meetingID)
     }
 

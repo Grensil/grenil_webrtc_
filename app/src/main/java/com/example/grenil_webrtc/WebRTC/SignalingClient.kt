@@ -47,6 +47,8 @@ class SignalingClient(private val meetingID : String,
 
     init {
         connect()
+        //코루틴 플래그 체킹 함수..
+        //함수를 호출
     }
 
     //시그널링 서버와 연결(실시간)
@@ -69,7 +71,7 @@ class SignalingClient(private val meetingID : String,
 //                        Log.e(TAG, "Error adding document", e)
 //                    }
         }
-        try {//이 방의 상태를 실시간으로 변경
+        try {
             db.collection("calls")
                 .document(meetingID)
                 .addSnapshotListener { snapshot, e ->
@@ -103,7 +105,7 @@ class SignalingClient(private val meetingID : String,
                     }
                 }
 
-
+            //실시간으로 후보자들의 offer 냐 answer 냐를 따져서 후보자에 넣는다.
             db.collection("calls").document(meetingID)
                     .collection("candidates").addSnapshotListener{ querysnapshot,e->
                         if (e != null) {
@@ -160,12 +162,11 @@ class SignalingClient(private val meetingID : String,
             }
             else -> "offerCandidate"
         }
-//        var type: String? = null //
-//        db.collection("calls").document(meetingID)
-//            .collection("candidates").document("answerCandidate").get().addOnSuccessListener {
+        //var type = "answerCandidate" // 기본은 answer(참가자) 로
+        // 성공하면 -> answer 실패하면 -> offer
+//        db.collection("calls").document(meetingID) // 하지만 참가자가 없다면 본인이 방장이 된다.
+//            .collection("candidates").get().result {
 //                    type = "offerCandidate"
-//            }.addOnFailureListener {-
-//                type = "answerCandidate"
 //            }
 
 //        if (db.collection("calls").document(meetingID) // 하지만 참가자가 없다면 본인이 방장이 된다.
@@ -189,6 +190,8 @@ class SignalingClient(private val meetingID : String,
                 "type" to type,
 
         )
+        var myID ="" // 내아이디 추가해서 넣기
+
         db.collection("calls")
             .document("$meetingID").collection("candidates").document(type!!)
             .set(candidateConstant as Map<String, Any>)

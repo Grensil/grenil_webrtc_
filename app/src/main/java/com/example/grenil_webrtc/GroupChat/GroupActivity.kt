@@ -1,4 +1,4 @@
-package com.example.grenil_webrtc.WebRTC
+package com.example.grenil_webrtc.GroupChat
 
 import android.Manifest
 import android.content.Intent
@@ -17,10 +17,20 @@ import com.developerspace.webrtcsample.SignalingClient
 import com.developerspace.webrtcsample.SignalingClientListener
 import com.example.grenil_webrtc.R
 import com.example.grenil_webrtc.View.MainActivity
+import com.example.grenil_webrtc.WebRTC.AppSdpObserver
+import com.example.grenil_webrtc.WebRTC.Constants
+import com.example.grenil_webrtc.WebRTC.PeerConnectionObserver
 import kotlinx.android.synthetic.main.activity_call.*
+import kotlinx.android.synthetic.main.activity_call.audio_output_button
+import kotlinx.android.synthetic.main.activity_call.end_call_button
+import kotlinx.android.synthetic.main.activity_call.mic_button
+import kotlinx.android.synthetic.main.activity_call.remote_view_loading
+import kotlinx.android.synthetic.main.activity_call.switch_camera_button
+import kotlinx.android.synthetic.main.activity_call.video_button
+import kotlinx.android.synthetic.main.activity_group.*
 import org.webrtc.*
 
-class RTCActivity : AppCompatActivity() {
+class GroupActivity : AppCompatActivity() {
 
     companion object {
         private const val CAMERA_AUDIO_PERMISSION_REQUEST_CODE = 1
@@ -53,10 +63,10 @@ class RTCActivity : AppCompatActivity() {
             //signallingClient.send(p0)
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_call)
+        setContentView(R.layout.activity_group)
+
 
         if (intent.hasExtra("meetingID"))
             meetingID = intent.getStringExtra("meetingID")!!
@@ -66,10 +76,6 @@ class RTCActivity : AppCompatActivity() {
         //isJoin은 우선 하드코딩
         //meetingID = "grensil1"
         //isJoin = true // false면 방장 , true면 참가자
-
-
-
-
 
         //권한 정보를 rctclient -> signlaingclient 에 보내는 역할
         checkCameraAndAudioPermission()
@@ -115,14 +121,14 @@ class RTCActivity : AppCompatActivity() {
             remote_view.isGone = false
             Constants.isCallEnded = true
             finish()
-            startActivity(Intent(this@RTCActivity, MainActivity::class.java))
+            startActivity(Intent(this@GroupActivity, MainActivity::class.java))
         }
     }
 
     private fun checkCameraAndAudioPermission() {
         if ((ContextCompat.checkSelfPermission(this, CAMERA_PERMISSION)
                     != PackageManager.PERMISSION_GRANTED) &&
-            (ContextCompat.checkSelfPermission(this,AUDIO_PERMISSION)
+            (ContextCompat.checkSelfPermission(this, AUDIO_PERMISSION)
                     != PackageManager.PERMISSION_GRANTED)) {
             requestCameraAndAudioPermission()
         } else {
@@ -136,8 +142,8 @@ class RTCActivity : AppCompatActivity() {
             object : PeerConnectionObserver() {
                 override fun onIceCandidate(p0: IceCandidate?) {
                     super.onIceCandidate(p0)
-                    signallingClient.sendIceCandidate(p0, isJoin) // 시그널링에 알려주고
-                    rtcClient.addIceCandidate(p0)// 클라이언트에 추가해주고
+                    signallingClient.sendIceCandidate(p0, isJoin)
+                    rtcClient.addIceCandidate(p0)
                 }
 
                 override fun onAddStream(p0: MediaStream?) {
@@ -176,15 +182,19 @@ class RTCActivity : AppCompatActivity() {
             }
         )
 
-        //내 화면 및 상대 화면 공간 초기화 및 비디오 출력 담당
-        rtcClient.initSurfaceView(remote_view)
-        rtcClient.initSurfaceView(local_view)
-        rtcClient.startLocalVideoCapture(local_view)
+        //이 부분 바꿔야함
+        rtcClient.initSurfaceView(remote_view1)
+        rtcClient.initSurfaceView(remote_view2)
+        rtcClient.initSurfaceView(remote_view3)
+        rtcClient.initSurfaceView(remote_view4)
+        rtcClient.startLocalVideoCapture(remote_view1)
+        //rtcClient.startLocalVideoCapture(remote_view2)
+        //rtcClient.startLocalVideoCapture(remote_view3)
+        //rtcClient.startLocalVideoCapture(remote_view4)
 
 
-        //시그널링 리스너 (방장일때도 포함되어야함)
         signallingClient =  SignalingClient(meetingID,createSignallingClientListener())
-        if (!isJoin) // 방장일 때
+        if (!isJoin) // 방장일시
             rtcClient.call(sdpObserver,meetingID)
     }
 
@@ -219,7 +229,7 @@ class RTCActivity : AppCompatActivity() {
                 Constants.isCallEnded = true
                 rtcClient.endCall(meetingID)
                 finish()
-                startActivity(Intent(this@RTCActivity, MainActivity::class.java))
+                startActivity(Intent(this@GroupActivity, MainActivity::class.java))
             }
         }
     }
@@ -229,7 +239,11 @@ class RTCActivity : AppCompatActivity() {
             !dialogShown) {
             showPermissionRationaleDialog()
         } else {
-            ActivityCompat.requestPermissions(this, arrayOf(CAMERA_PERMISSION, AUDIO_PERMISSION), CAMERA_AUDIO_PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(this, arrayOf(
+                CAMERA_PERMISSION,
+                AUDIO_PERMISSION
+            ), CAMERA_AUDIO_PERMISSION_REQUEST_CODE
+            )
         }
     }
 
@@ -265,5 +279,4 @@ class RTCActivity : AppCompatActivity() {
         signallingClient.destroy()
         super.onDestroy()
     }
-
 }

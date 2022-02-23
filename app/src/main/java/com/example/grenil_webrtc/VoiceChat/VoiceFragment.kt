@@ -54,9 +54,12 @@ class VoiceFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> a8e43dc4b6e9e798ec209ae89047d000ba1ed601
     }
 
     override fun onCreateView(

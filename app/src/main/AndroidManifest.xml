@@ -17,7 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Grenil_webrtc">
         <activity
-            android:name=".WebRTC.RTCActivity"
+            android:name=".GroupChat.GroupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VoiceChat.RTCActivity"
             android:exported="false" />
         <activity
             android:name=".View.MainActivity"

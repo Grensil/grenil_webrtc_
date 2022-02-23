@@ -2,27 +2,18 @@ package com.example.grenil_webrtc.VoiceChat
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.DataBindingUtil.setContentView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developerspace.webrtcsample.RTCClient
 import com.developerspace.webrtcsample.SignalingClient
-import com.developerspace.webrtcsample.SignalingClientListener
 import com.example.grenil_webrtc.Adapter.PersonAdapter
 import com.example.grenil_webrtc.R
-import com.example.grenil_webrtc.View.MainActivity
 import com.example.grenil_webrtc.WebRTC.AppSdpObserver
-import com.example.grenil_webrtc.WebRTC.Constants
-import com.example.grenil_webrtc.WebRTC.RTCActivity
 import com.example.grenil_webrtc.databinding.FragmentVoiceBinding
-import kotlinx.android.synthetic.main.activity_call.*
-import org.webrtc.IceCandidate
 import org.webrtc.SessionDescription
 
 // TODO: Rename parameter arguments, choose names that match
@@ -41,6 +32,7 @@ class VoiceFragment : Fragment() {
 
     private var binding : FragmentVoiceBinding? = null
     lateinit var myadapter : PersonAdapter
+
     var peers: List<String> = listOf("first peer","second peer","third peer")
 
     private var meetingID : String = "test-call"
@@ -81,7 +73,7 @@ class VoiceFragment : Fragment() {
         myadapter.setPeerClickListener(PersonClickListener())
         recyclerView.adapter = myadapter
 
-        //나에게 요청이 왔는지에 대한 리스너를 만들고싶다.. But, How?
+        //나에게 요청이 왔는지에 대한 감지 함수 or 리스너를 만들고싶다..-> Dialog 허락 -> 대화 But, How?
 
 //        val intent = Intent(requireContext(), RTCActivity::class.java)
 //        val meeting_id = meetingID //peername 으로 방을 만들자
@@ -91,8 +83,9 @@ class VoiceFragment : Fragment() {
 //        startActivity(intent)
 
         return binding!!.root
-    }
 
+    }
+    //실시간으로 요청왔는지 체크하는 함수(시그널링 클라이언트)
 
     inner class PersonClickListener : PersonAdapter.onPeerClickListener {
         override fun onPeerClick(peerName: String) {
@@ -101,7 +94,7 @@ class VoiceFragment : Fragment() {
             //현재 아이템(peer 정보/ meeting ID) 클릭한것을 RTCActivity로 넘겨주자
             val intent = Intent(requireContext(), RTCActivity::class.java)
             val meeting_id = peerName //peername 으로 방을 만들자
-            val isJoin = false // false면 방장 , true 면 참가자
+            val isJoin = true // false면 방장(가상머신) , true(기기) 면 참가자
             intent.putExtra("meetingID",meeting_id)
             intent.putExtra("isJoin",isJoin)
             startActivity(intent)

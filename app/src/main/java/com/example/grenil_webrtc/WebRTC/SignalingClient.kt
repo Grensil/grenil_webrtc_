@@ -47,6 +47,8 @@ class SignalingClient(private val meetingID : String,
 
     init {
         connect()
+        //코루틴 플래그 체킹 함수..
+        //함수를 호출
     }
 
     //시그널링 서버와 연결(실시간)
@@ -188,6 +190,8 @@ class SignalingClient(private val meetingID : String,
                 "type" to type,
 
         )
+        var myID ="" // 내아이디 추가해서 넣기
+
         db.collection("calls")
             .document("$meetingID").collection("candidates").document(type!!)
             .set(candidateConstant as Map<String, Any>)

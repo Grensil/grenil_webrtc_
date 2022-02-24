@@ -5,18 +5,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".View.VoiceFragment">
-
         <!-- TODO: Update blank fragment layout -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="30dp"
+            android:layout_height="match_parent"
             tools:listitem="@layout/item_person">
-
         </androidx.recyclerview.widget.RecyclerView>
-
     </FrameLayout>
-
 </layout>

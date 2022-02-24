@@ -3,6 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Baek/solo/webrtc/app/src/main/res/drawable-v24/ic_baseline_cameraswitch_24.xml" value="0.194" />
+        <entry key="..\:/Baek/solo/webrtc/app/src/main/res/layout/activity_call.xml" value="0.10511651469098278" />
+        <entry key="..\:/Baek/solo/webrtc/app/src/main/res/layout/activity_group.xml" value="0.1859375" />
+        <entry key="..\:/Baek/solo/webrtc/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Baek/solo/webrtc/app/src/main/res/layout/custom_toolbar.xml" value="0.21614583333333334" />
+        <entry key="..\:/Baek/solo/webrtc/app/src/main/res/layout/fragment_group.xml" value="0.21" />
+        <entry key="..\:/Baek/solo/webrtc/app/src/main/res/layout/fragment_voice.xml" value="0.18802083333333333" />
+        <entry key="..\:/Baek/solo/webrtc/app/src/main/res/layout/item_person.xml" value="0.33" />
+        <entry key="..\:/Baek/solo/webrtc/app/src/main/res/layout/sample_layout.xml" value="0.18802083333333333" />
+        <entry key="..\:/Baek/solo/webrtc/app/src/main/res/layout/sliding_menu.xml" value="0.25" />
         <entry key="app/src/main/res/drawable-v24/circle_background.xml" value="0.1435" />
         <entry key="app/src/main/res/drawable-v24/curve_background.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/border.xml" value="0.145" />
@@ -15,7 +25,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

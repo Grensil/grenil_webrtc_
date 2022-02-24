@@ -17,12 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Grenil_webrtc">
         <activity
+            android:launchMode="singleTask"
             android:name=".GroupChat.GroupActivity"
             android:exported="false" />
         <activity
+            android:launchMode="singleTask"
             android:name=".VoiceChat.RTCActivity"
             android:exported="false" />
         <activity
+            android:launchMode="singleTask"
             android:name=".View.MainActivity"
             android:exported="true">
             <intent-filter>

@@ -5,7 +5,11 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
@@ -43,11 +47,13 @@ class MainActivity : AppCompatActivity() {
     //바인딩
     val binding by lazy { ActivityMainBinding.inflate(layoutInflater)}
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        val toolbar = binding.toolbar.toolbar;
+        setSupportActionBar(toolbar);
+        initToolbar(supportActionBar);
 
         //권한 설정
         //checkPermissions()
@@ -88,34 +94,40 @@ class MainActivity : AppCompatActivity() {
         //slidePanel.addPanelSlideListener(PanelEventListener())
 
         //다른 영역 터치 불가
-        slidePanel.isTouchEnabled = false
+        slidePanel.panelState = SlidingUpPanelLayout.PanelState.EXPANDED;
+
+        slidePanel.isTouchEnabled = false;
+
+        setSlidePanel(slidePanel);
+
+        val slideMenu = binding.slideLayout;
 
         //처음부터 나왔고 toggle 버튼 클릭하면 사라지기
-        binding.btnToggle.setOnClickListener {
-            slidePanel.panelState =SlidingUpPanelLayout.PanelState.HIDDEN
+        slideMenu.btnToggle.setOnClickListener {
+            //slidePanel.panelState =SlidingUpPanelLayout.PanelState.COLLAPSED
+            val state = slidePanel.panelState;
             checkPermissions()
-            //val state = slidePanel.panelState
             // 닫힌 상태일 경우 열기
-//            if (state == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-//                slidePanel.panelState = SlidingUpPanelLayout.PanelState.ANCHORED
-//            }
-//            // 열린 상태일 경우 닫기
-//            else if (state == SlidingUpPanelLayout.PanelState.EXPANDED) {
-//                slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
-//            }
+            if (state == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                slidePanel.panelState = SlidingUpPanelLayout.PanelState.EXPANDED
+            }
+            // 열린 상태일 경우 닫기
+            else if (state == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+            }
         }
         //알람
-        binding.permissionAlarm.setOnClickListener {
+        slideMenu.permissionAlarm.setOnClickListener {
             rejectedPermissionList.add(CAMERA_PERMISSION)
         }
 
         //카메라
-        binding.permissionCamera.setOnClickListener {
+        slideMenu.permissionCamera.setOnClickListener {
             rejectedPermissionList.add(CAMERA_PERMISSION)
         }
 
         //마이크
-        binding.permissionMike.setOnClickListener {
+        slideMenu.permissionMike.setOnClickListener {
             rejectedPermissionList.add(AUDIO_PERMISSION)
 
         }
@@ -145,14 +157,39 @@ class MainActivity : AppCompatActivity() {
 
             }
         }.attach()
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
+        Toast.makeText(applicationContext, "옵션", Toast.LENGTH_SHORT).show();
 
+        return super.onOptionsItemSelected(item)
+    }
 
+    private fun setSlidePanel(slidePanelLayout: SlidingUpPanelLayout){
+        slidePanelLayout.getChildAt(0).setOnTouchListener(object : View.OnTouchListener{
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                return true;
+            }
+        });
+
+        slidePanelLayout.getChildAt(1).setOnTouchListener(object : View.OnTouchListener{
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                return true;
+            }
+        })
+    }
+
+    private fun initToolbar(actionBar: ActionBar?){
+        if(actionBar != null){
+            actionBar.title="WebRTC";
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_icon);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private fun checkPermissions() {
-
 
         //필요한 퍼미션들을 하나씩 끄집어내서 현재 권한을 받았는지 체크
         for(permission in requiredPermissions){
